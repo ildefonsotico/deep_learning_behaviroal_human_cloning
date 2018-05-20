@@ -18,6 +18,7 @@ for line in lines:
     image = cv2.imread(current_path)
     if image is None:
         print("Image path incorrect: ", current_path)
+        continue
     images.append(image)
     measurement = float(line[3])
     measurements.append(measurement)
