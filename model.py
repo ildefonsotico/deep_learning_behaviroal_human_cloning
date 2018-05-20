@@ -23,14 +23,14 @@ for line in lines:
 X_train = np.array(images)
 Y_train = np.array(measurements)
 
-from Keras.models import Sequential
-from Keras.layers import Flatten, Dense
+from keras.models import Sequential
+from keras.layers import Flatten, Dense
 
 model = Sequential()
-model.add(Flatten(input_shape=(160, 320, 3)))
+model.add(Flatten(input_shape=(160,320,3)))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epochs=7)
+model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=7)
 
 model.save('model_simple_fullyconnected.h5')
