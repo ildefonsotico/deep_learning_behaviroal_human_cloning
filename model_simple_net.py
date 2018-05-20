@@ -30,13 +30,17 @@ measurements = []
 for line in lines:
     source_path=line[0]
     filename = source_path.split('/')[-1]
-    current_path = '../data/IMG' + filename
+    current_path = 'data/IMG/' + filename
     image = cv2.imread(current_path)
+    if image is None:
+        print("Image path incorrect: ", current_path)
     images.append(image)
     measurement = float(line[3])
     measurements.append(measurement)
 
 X_train = np.array(images)
 Y_train = np.array(measurements)
+print("X Train: ",X_train)
+print("Y Train: ",Y_train)
 
 SimpleNet(X_train, Y_train)
