@@ -55,4 +55,4 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-model.save('model_lenet_w_augmentation.h5')
+model.save('model_lenet_augmentation.h5')
