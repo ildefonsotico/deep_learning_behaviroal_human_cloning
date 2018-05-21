@@ -12,45 +12,49 @@ with open('data/driving_log.csv') as csvfile:
 images = []
 measurements = []
 for line in lines:
-    for i in range(3):
 
-        source_path=line[i]
-        filename = source_path.split('/')[-1]
-        current_path = 'data/IMG/' + filename
-        img_center = cv2.imread(current_path)
-        img_left = cv2.imread(current_path)
-        img_right = cv2.imread(current_path)
-        if img_center is None:
-            print("Image path incorrect: ", img_center)
-            continue
-        if img_left is None:
-            print("Image path incorrect: ", img_left)
-            continue
-        if img_right is None:
-            print("Image path incorrect: ", img_right)
-            continue
-        #images.append(image)
-        steering_center = float(line[3])
-        # create adjusted steering measurements for the side camera images
-        correction = 0.2
-        steering_left = steering_center + correction
-        steering_right = steering_center - correction
+    source_path=line[0]
+    filename_center = source_path.split('/')[-1]
+    source_path = line[1]
+    filename_left = source_path.split('/')[-1]
+    source_path = line[2]
+    filename_right = source_path.split('/')[-1]
 
-        # read in images from center, left and right cameras
+    current_path = 'data/IMG/'
+    img_center = cv2.imread(current_path + filename_center)
+    img_left = cv2.imread(current_path + filename_left)
+    img_right = cv2.imread(current_path + filename_right)
+    print("Image Center: ", img_center)
+    print("Image Left: ", img_left)
+    print("Image Right: ", img_right)
 
-        # add images and angles to data set
-        images.append(img_center)
-        measurements.append(steering_center)
+    if img_center is None:
+        print("Image Center path incorrect: ", img_center)
+        continue
+    if img_left is None:
+        print("Image Left path incorrect: ", img_left)
+        continue
+    if img_right is None:
+        print("Image Right path incorrect: ", img_right)
+        continue
+    #images.append(image)
+    steering_center = float(line[3])
+    # create adjusted steering measurements for the side camera images
+    correction = 0.2
+    steering_left = steering_center + correction
+    steering_right = steering_center - correction
 
-        images.append(img_left)
-        measurements.append(steering_left)
+    # read in images from center, left and right cameras
 
-        images.append(img_right)
-        measurements.append(steering_right)
+    # add images and angles to data set
+    images.append(img_center)
+    measurements.append(steering_center)
 
+    images.append(img_left)
+    measurements.append(steering_left)
 
-
-        #measurements.append(steering_center)
+    images.append(img_right)
+    measurements.append(steering_right)
 
 augmentation_imgs, augmentation_measurements = [], []
 for image, measurement in zip(images, measurements):
