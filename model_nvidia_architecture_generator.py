@@ -4,6 +4,7 @@ import numpy as np
 import sklearn
 
 from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 
 def generator(samples, batch_size=32):
     num_samples = len(samples)
@@ -18,7 +19,7 @@ def generator(samples, batch_size=32):
             for batch_sample in batch_samples:
 
 
-                current_path = 'data/IMG/' + batch_sample[0].split('/')[-1]
+                current_path = 'data/IMG/'
                 filename_center = batch_sample[0].split('/')[-1]
                 filename_left = batch_sample[1].split('/')[-1]
                 filename_right = batch_sample[2].split('/')[-1]
@@ -75,31 +76,13 @@ with open('data/driving_log.csv') as csvfile:
         samples.append(line)
 
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
-images = []
-measurements = []
-for line in samples:
-
-    source_path=line[0]
-    filename_center = source_path.split('/')[-1]
-    source_path = line[1]
-    filename_left = source_path.split('/')[-1]
-    source_path = line[2]
-    filename_right = source_path.split('/')[-1]
-
-    current_path = 'data/IMG/'
-    img_center = cv2.imread(current_path + filename_center)
-    img_left = cv2.imread(current_path + filename_left)
-    img_right = cv2.imread(current_path + filename_right)
-
-
-    #images.append(image)
 
 
 train_generator = generator(train_samples, batch_size=32)
 validation_generator = generator(validation_samples, batch_size=32)
 
-print("X Train: ",train_generator[0])
-print("Y Train: ",train_generator[1])
+print("X Train: ",train_generator)
+print("Y Train: ",train_generator)
 
 from keras.models import Sequential
 from keras.layers import Flatten, Dense

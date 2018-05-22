@@ -31,13 +31,6 @@ for line in lines:
     if img_center is None:
         print("Image Center path incorrect: ", img_center)
         continue
-    if img_left is None:
-        print("Image Left path incorrect: ", img_left)
-        continue
-    if img_right is None:
-        print("Image Right path incorrect: ", img_right)
-        continue
-    #images.append(image)
     steering_center = float(line[3])
     # create adjusted steering measurements for the side camera images
     correction = 0.2
