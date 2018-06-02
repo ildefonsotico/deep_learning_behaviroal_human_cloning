@@ -212,7 +212,7 @@ model.add(Convolution2D(48,5,5,subsample=(2,2),border_mode='valid', activation='
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', activation='elu'))
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', activation='elu'))
-model.add(Dropout(0.5))
+
 model.add(Flatten())
 model.add(Dense(1164,  activation='elu'))
 model.add(Dense(100,  activation='elu'))
@@ -227,4 +227,4 @@ model.compile(loss='mse', optimizer=Adam(learning_rate))
 model.fit_generator(train_generator, samples_per_epoch= (len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
 #model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-model.save('model_nvidia_3cameras_cropping_generator_modified_elu_high_augmentation_dropout_YUV.h5')
+model.save('model_nvidia_3cameras_cropping_generator_modified_elu_high_augmentation_YUV.h5')
