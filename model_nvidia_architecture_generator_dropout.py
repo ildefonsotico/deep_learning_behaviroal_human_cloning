@@ -6,11 +6,11 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-def generator(samples, batch_size=64):
+def generator(samples, batch_size=2):
     num_samples = len(samples)
 
     while 1:# Loop forever so the generator never terminates
-        #shuffle(samples)
+        shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset+batch_size]
 
@@ -26,6 +26,7 @@ def generator(samples, batch_size=64):
                 img_center = cv2.imread(current_path + filename_center)
                 img_left = cv2.imread(current_path + filename_left)
                 img_right = cv2.imread(current_path + filename_right)
+
 
                 if img_center is None:
                     print("Image Center path incorrect: ", img_center)
@@ -49,11 +50,13 @@ def generator(samples, batch_size=64):
                 images.append(img_center)
                 measurements.append(steering_center)
 
+
                 images.append(img_left)
                 measurements.append(steering_left)
 
                 images.append(img_right)
                 measurements.append(steering_right)
+
 
             augmentation_imgs, augmentation_measurements = [], []
             for image, measurement in zip(images, measurements):
@@ -75,14 +78,12 @@ with open('data/driving_log.csv') as csvfile:
     for line in reader:
         samples.append(line)
 
-train_samples, validation_samples = train_test_split(samples, test_size=0.2)
+train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 
-train_generator = generator(train_samples, batch_size=64)
-validation_generator = generator(validation_samples, batch_size=64)
+train_generator = generator(train_samples, batch_size=2)
+validation_generator = generator(validation_samples, batch_size=2)
 
-print("X Train: ",train_generator)
-print("Y Train: ",train_generator)
 
 from keras.models import Sequential
 from keras.layers import Flatten, Dense
@@ -90,27 +91,35 @@ from keras.layers import Lambda
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.layers import Cropping2D
+from keras.layers import Dropout
 
 model = Sequential()
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
-model.add(Convolution2D(6,5,5,activation='relu'))
+model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5))
+model.add(Convolution2D(24,5,5,subsample=(2,2),activation='relu'))
 model.add(Dropout(0.5))
-model.add(MaxPooling2D())
-model.add(Convolution2D(6,5,5,activation='relu'))
+model.add(Convolution2D(36,5,5,subsample=(2,2),activation='relu'))
 model.add(Dropout(0.5))
-model.add(MaxPooling2D())
+model.add(Convolution2D(48,5,5,subsample=(2,2),activation='relu'))
+model.add(Dropout(0.5))
+model.add(Convolution2D(64,3,3,activation='relu'))
+model.add(Dropout(0.5))
+model.add(Convolution2D(64,3,3,activation='relu'))
 model.add(Dropout(0.5))
 model.add(Flatten())
-model.add(Dense(120))
+model.add(Dense(512))
+model.add(Dense(128))
 model.add(Dropout(0.5))
-model.add(Dense(84))
+model.add(Dense(64))
+model.add(Dropout(0.5))
+model.add(Dense(10))
 model.add(Dropout(0.5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit_generator(train_generator, samples_per_epoch= len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
 
-#model.fit(train_generator, validation_generator, validation_split=0.3, shuffle=True, nb_epoch=5)
+print ("TRain samples", len(train_samples))
+model.fit_generator(train_generator, samples_per_epoch= (6*len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=3)
+#model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-
-model.save('model_lenet_ELU_augmentation_generator.h5')
+model.save('model_nvidia_3cameras_cropping_generator_dropout_2.h5')

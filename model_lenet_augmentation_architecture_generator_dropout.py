@@ -6,11 +6,11 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-def generator(samples, batch_size=64):
+def generator(samples, batch_size=1):
     num_samples = len(samples)
 
     while 1:# Loop forever so the generator never terminates
-        #shuffle(samples)
+        shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples[offset:offset+batch_size]
 
@@ -78,8 +78,8 @@ with open('data/driving_log.csv') as csvfile:
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 
-train_generator = generator(train_samples, batch_size=64)
-validation_generator = generator(validation_samples, batch_size=64)
+train_generator = generator(train_samples, batch_size=1)
+validation_generator = generator(validation_samples, batch_size=1)
 
 print("X Train: ",train_generator)
 print("Y Train: ",train_generator)
@@ -89,10 +89,12 @@ from keras.layers import Flatten, Dense
 from keras.layers import Lambda
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
+from keras.layers import Dropout
 from keras.layers import Cropping2D
 
 model = Sequential()
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
+model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5))
 model.add(Convolution2D(6,5,5,activation='relu'))
 model.add(Dropout(0.5))
 model.add(MaxPooling2D())
@@ -113,4 +115,4 @@ model.fit_generator(train_generator, samples_per_epoch= len(train_samples), vali
 #model.fit(train_generator, validation_generator, validation_split=0.3, shuffle=True, nb_epoch=5)
 
 
-model.save('model_lenet_ELU_augmentation_generator.h5')
+model.save('model_lenet_augmentation_3cameras_generator_Dropout.h5')
