@@ -38,6 +38,50 @@ def crop(image, top_percent, bottom_percent):
 
     return image[top:bottom, :]
 
+def augment_brightness_camera_images(image):
+    image1 = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
+    image1 = np.array(image1, dtype = np.float64)
+    random_bright = .5+np.random.uniform()
+    image1[:,:,2] = image1[:,:,2]*random_bright
+    image1[:,:,2][image1[:,:,2]>255]  = 255
+    image1 = np.array(image1, dtype = np.uint8)
+    image1 = cv2.cvtColor(image1,cv2.COLOR_HSV2RGB)
+    return image1
+
+
+def trans_image(image, steer, trans_range):
+    # Translation
+    tr_x = trans_range * np.random.uniform() - trans_range / 2
+    steer_ang = steer + tr_x / trans_range * 2 * .2
+    tr_y = 40 * np.random.uniform() - 40 / 2
+    # tr_y = 0
+    Trans_M = np.float32([[1, 0, tr_x], [0, 1, tr_y]])
+    image_tr = cv2.warpAffine(image, Trans_M, (cols, rows))
+
+    return image_tr, steer_ang
+
+def add_random_shadow(image):
+    top_y = 320*np.random.uniform()
+    top_x = 0
+    bot_x = 160
+    bot_y = 320*np.random.uniform()
+    image_hls = cv2.cvtColor(image,cv2.COLOR_RGB2HLS)
+    shadow_mask = 0*image_hls[:,:,1]
+    X_m = np.mgrid[0:image.shape[0],0:image.shape[1]][0]
+    Y_m = np.mgrid[0:image.shape[0],0:image.shape[1]][1]
+    shadow_mask[((X_m-top_x)*(bot_y-top_y) -(bot_x - top_x)*(Y_m-top_y) >=0)]=1
+    #random_bright = .25+.7*np.random.uniform()
+    if np.random.randint(2)==1:
+        random_bright = .5
+        cond1 = shadow_mask==1
+        cond0 = shadow_mask==0
+        if np.random.randint(2)==1:
+            image_hls[:,:,1][cond1] = image_hls[:,:,1][cond1]*random_bright
+        else:
+            image_hls[:,:,1][cond0] = image_hls[:,:,1][cond0]*random_bright
+    image = cv2.cvtColor(image_hls,cv2.COLOR_HLS2RGB)
+    return image
+
 def generator(samples, batch_size=2):
     num_samples = len(samples)
 
@@ -103,6 +147,31 @@ def generator(samples, batch_size=2):
             yield sklearn.utils.shuffle(X_train, Y_train)
 
 
+def generate_train_from_PD_batch(data, batch_size=32):
+    batch_images = np.zeros((batch_size, new_size_row, new_size_col, 3))
+    batch_steering = np.zeros(batch_size)
+    while 1:
+        for i_batch in range(batch_size):
+            i_line = np.random.randint(len(data))
+            line_data = data.iloc[[i_line]].reset_index()
+
+            keep_pr = 0
+            # x,y = preprocess_image_file_train(line_data)
+            while keep_pr == 0:
+                x, y = preprocess_image_file_train(line_data)
+                pr_unif = np.random
+                if abs(y) < .1:
+                    pr_val = np.random.uniform()
+                    if pr_val > pr_threshold:
+                        keep_pr = 1
+                else:
+                    keep_pr = 1
+
+            # x = x.reshape(1, x.shape[0], x.shape[1], x.shape[2])
+            # y = np.array([[y]])
+            batch_images[i_batch] = x
+            batch_steering[i_batch] = y
+        yield batch_images, batch_steering
 
 
 samples = []
@@ -114,8 +183,8 @@ with open('data/driving_log.csv') as csvfile:
 train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 
-train_generator = generator(train_samples, batch_size=2)
-validation_generator = generator(validation_samples, batch_size=2)
+#train_generator = generator(train_samples, batch_size=2)
+#validation_generator = generator(validation_samples, batch_size=2)
 
 print("X Train: ",train_generator)
 print("Y Train: ",train_generator)
@@ -151,7 +220,12 @@ model.summary()
 
 model.compile(loss='mse', optimizer=Adam(learning_rate))
 
-model.fit_generator(train_generator, samples_per_epoch= (6*len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
+for it in range(8):
+    train_generator = generator(train_samples, batch_size=256)
+    validation_generator = generator(validation_samples, batch_size=256)
+    model.fit_generator(train_generator, samples_per_epoch=20000, nb_epoch=1, verbose=1)
+
+#model.fit_generator(train_generator, samples_per_epoch= (6*len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
 #model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
 model.save('model_nvidia_3cameras_cropping_generator_modified_end_.h5')
