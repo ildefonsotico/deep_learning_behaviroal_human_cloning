@@ -38,7 +38,7 @@ def crop(image, top_percent, bottom_percent):
 
     return image[top:bottom, :]
 
-def generator(samples, batch_size=1):
+def generator(samples, batch_size=2):
     num_samples = len(samples)
 
     while 1:# Loop forever so the generator never terminates
@@ -114,8 +114,8 @@ with open('data/driving_log.csv') as csvfile:
 train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 
-train_generator = generator(train_samples, batch_size=1)
-validation_generator = generator(validation_samples, batch_size=1)
+train_generator = generator(train_samples, batch_size=2)
+validation_generator = generator(validation_samples, batch_size=2)
 
 print("X Train: ",train_generator)
 print("Y Train: ",train_generator)
@@ -131,8 +131,8 @@ from keras.optimizers import Adam
 learning_rate = 1e-4
 
 model = Sequential()
-#model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
-model.add(Lambda(lambda x: x / 127.5 - 1.0, input_shape=(64,64,3)))
+model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
+#model.add(Lambda(lambda x: x / 127.5 - 1.0, input_shape=(64,64,3)))
 model.add(Convolution2D(24,5,5,subsample=(2,2),border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(36,5,5,subsample=(2,2),border_mode='same', activation='relu'))
@@ -154,4 +154,4 @@ model.compile(loss='mse', optimizer=Adam(learning_rate))
 model.fit_generator(train_generator, samples_per_epoch= (6*len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
 #model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-model.save('model_nvidia_3cameras_cropping_generator_modified_end.h5')
+model.save('model_nvidia_3cameras_cropping_generator_modified_end_.h5')
