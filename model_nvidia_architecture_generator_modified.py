@@ -38,7 +38,7 @@ def crop(image, top_percent, bottom_percent):
 
     return image[top:bottom, :]
 
-def generator(samples, batch_size=2):
+def generator(samples, batch_size=1):
     num_samples = len(samples)
 
     while 1:# Loop forever so the generator never terminates
@@ -114,8 +114,8 @@ with open('data/driving_log.csv') as csvfile:
 train_samples, validation_samples = train_test_split(samples, test_size=0.3)
 
 
-train_generator = generator(train_samples, batch_size=2)
-validation_generator = generator(validation_samples, batch_size=2)
+train_generator = generator(train_samples, batch_size=1)
+validation_generator = generator(validation_samples, batch_size=1)
 
 print("X Train: ",train_generator)
 print("Y Train: ",train_generator)
