@@ -54,25 +54,28 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model has Keras lambda layer in order to normalize the model dataset. It is used just divind each image by 255 and then subtracting a offset (0.5).
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+My model consists of a convolution neural network with 5x5 filter sizes and depths between 6 and 120 (model.py lines 96-104).
+
+
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 98, 101, 103, 106 and 108). 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 81-82).
+The validation set was done by spliting training dataset by 20%. 
+The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 111).
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road. The dataset had way to recovery from each side. It also was used to make some curves smoothly in order to provide better way to handle with the curves.  
 
-For details about how I created the training data, see the next section. 
 
 ### Model Architecture and Training Strategy
 
@@ -80,15 +83,25 @@ For details about how I created the training data, see the next section.
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+The model tryed to use different layers in order to get better accuracy such traning mode as validation mode. 
+The model introduce RELU layers to introduce nonlinearity (code line 96 and 98). The base archicture that worked better is a very simple one. 
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+It uses a Convulution with filter with 5x5 size following for a RELU activation funtion. 
+Next it uses a MaxPooling layer folloowing by a Convolution layer again with 5x% filter. 
+Next it uses MaxPooling again, then a flatten layer. 
 
-To combat the overfitting, I modified the model so that ...
+The last 3 steps of the net used 3 fully connected layer starting by 120 passing through 84 and finally 1. 
 
-Then I ... 
+It tested a lot of different architectures since the VGGNet and the NVIDIANet. All of the architectures was not able to do a specific curve (The .h5 files from all architectures I have tried are into the trained folder). All of them went out of the road or hit the hills. This simple one was the best approach found in terms of capacity to complete de circuit without hit or slipery for the edges of the curves. 
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+In order to gauge how well the model was working, I split my image and steering angle dataset into a training and validation set. 
+
+I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+
+To combat the overfitting, I modified the model so that use dropout with keep_prob of the 0.5. 
+Then I got better tranning loss and validation.  
+
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, mainly on the next curve after the bridge. I improved the driving behavior in these cases just collecting more data about that section of the circuit.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
