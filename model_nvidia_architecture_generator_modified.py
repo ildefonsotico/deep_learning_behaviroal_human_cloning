@@ -68,7 +68,7 @@ def trans_image(image, steer, trans_range):
     # tr_y = 0
     Trans_M = np.float32([[1, 0, tr_x], [0, 1, tr_y]])
     height, width = image.shape[:2]
-    image_tr = cv2.warpAffine(image, Trans_M, (height, width))
+    image_tr = cv2.warpAffine(image, Trans_M, ( width, height))
 
     return image_tr, steer_ang
 
