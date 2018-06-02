@@ -6,6 +6,10 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 import scipy.misc
+import random
+
+HEIGHT,WIDTH, CHANNELS = 66,200,3
+NEW_SHAPE = (HEIGHT,WIDTH, CHANNELS)
 
 def resize(image, new_dim):
     """
@@ -17,7 +21,7 @@ def resize(image, new_dim):
     :return:
         Resize image
     """
-    return scipy.misc.imresize(image, new_dim)
+    cv2.resize(image, new_dim, cv2.INTER_AREA)
 
 def crop(image, top_percent, bottom_percent):
     """
@@ -37,6 +41,12 @@ def crop(image, top_percent, bottom_percent):
     bottom = image.shape[0] - int(np.ceil(image.shape[0] * bottom_percent))
 
     return image[top:bottom, :]
+
+def rgb2yuv(image):
+    """
+    Convert the image from RGB to YUV (This is what the NVIDIA model does)
+    """
+    return cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
 
 def augment_brightness_camera_images(image):
     image1 = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
@@ -94,7 +104,6 @@ def generator(samples, batch_size=2):
             measurements = []
             for batch_sample in batch_samples:
 
-
                 current_path = 'data/IMG/'
                 filename_center = batch_sample[0].split('/')[-1]
                 filename_left = batch_sample[1].split('/')[-1]
@@ -114,9 +123,9 @@ def generator(samples, batch_size=2):
                     print("Image Right path incorrect: ", img_right)
                     continue
 
-                img_center = crop(img_center, 0.35, 0.1)
-                img_left = crop(img_left, 0.35, 0.1)
-                img_right = crop(img_right, 0.35, 0.1)
+                img_center = crop(img_center, 0.2, 0.15)
+                img_left = crop(img_left, 0.2, 0.15)
+                img_right = crop(img_right, 0.2, 0.15)
                 steering_center = float(batch_sample[3])
                 # create adjusted steering measurements for the side camera images
                 correction = 0.2292
@@ -136,10 +145,25 @@ def generator(samples, batch_size=2):
 
             augmentation_imgs, augmentation_measurements = [], []
             for image, measurement in zip(images, measurements):
-                augmentation_imgs.append(resize(image, (64,64)))
+
+                augmentation_imgs.append(rgb2yuv(resize(image, NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
-                augmentation_imgs.append(resize(cv2.flip(image, 1), (64,64)))
+
+                augmentation_imgs.append(rgb2yuv(resize(augment_brightness_camera_images(image),NEW_SHAPE)))
+                augmentation_measurements.append(measurement)
+
+                augmentation_imgs.append(rgb2yuv(resize(rgb2yuv(add_random_shadow(image),NEW_SHAPE))))
+                augmentation_measurements.append(measurement)
+
+                augmentation_imgs.append(rgb2yuv(resize(cv2.flip(image, 1), NEW_SHAPE)))
                 augmentation_measurements.append(measurement * -1.0)
+
+                image, measurement = trans_image(image, measurement, random.randint(1,50))
+
+                augmentation_imgs.append(resize(rgb2yuv(augment_brightness_camera_images(image), NEW_SHAPE)))
+                augmentation_measurements.append(measurement)
+
+
 
             # trim image to only see section with road
             X_train = np.array(augmentation_imgs)
@@ -147,31 +171,6 @@ def generator(samples, batch_size=2):
             yield sklearn.utils.shuffle(X_train, Y_train)
 
 
-def generate_train_from_PD_batch(data, batch_size=32):
-    batch_images = np.zeros((batch_size, new_size_row, new_size_col, 3))
-    batch_steering = np.zeros(batch_size)
-    while 1:
-        for i_batch in range(batch_size):
-            i_line = np.random.randint(len(data))
-            line_data = data.iloc[[i_line]].reset_index()
-
-            keep_pr = 0
-            # x,y = preprocess_image_file_train(line_data)
-            while keep_pr == 0:
-                x, y = preprocess_image_file_train(line_data)
-                pr_unif = np.random
-                if abs(y) < .1:
-                    pr_val = np.random.uniform()
-                    if pr_val > pr_threshold:
-                        keep_pr = 1
-                else:
-                    keep_pr = 1
-
-            # x = x.reshape(1, x.shape[0], x.shape[1], x.shape[2])
-            # y = np.array([[y]])
-            batch_images[i_batch] = x
-            batch_steering[i_batch] = y
-        yield batch_images, batch_steering
 
 
 samples = []
@@ -180,11 +179,11 @@ with open('data/driving_log.csv') as csvfile:
     for line in reader:
         samples.append(line)
 
-train_samples, validation_samples = train_test_split(samples, test_size=0.3)
+train_samples, validation_samples = train_test_split(12*samples, test_size=0.3)
 
 
-#train_generator = generator(train_samples, batch_size=2)
-#validation_generator = generator(validation_samples, batch_size=2)
+train_generator = generator(train_samples, batch_size=2)
+validation_generator = generator(validation_samples, batch_size=2)
 
 print("X Train: ",train_generator)
 print("Y Train: ",train_generator)
@@ -195,37 +194,35 @@ from keras.layers import Lambda
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.layers import Cropping2D
+from keras.layers import Dropout
 from keras.optimizers import Adam
 
 learning_rate = 1e-4
 
 model = Sequential()
-model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
-#model.add(Lambda(lambda x: x / 127.5 - 1.0, input_shape=(64,64,3)))
-model.add(Convolution2D(24,5,5,subsample=(2,2),border_mode='same', activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(36,5,5,subsample=(2,2),border_mode='same', activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(48,5,5,subsample=(2,2),border_mode='same', activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='same', activation='relu'))
-model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='same', activation='relu'))
+#model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
+model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=NEW_SHAPE))
+model.add(Convolution2D(24,5,5,subsample=(2,2),border_mode='valid', init="he_normal", activation='elu'))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(36,5,5,subsample=(2,2),border_mode='valid', init="he_normal", activation='elu'))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(48,5,5,subsample=(2,2),border_mode='valid', init="he_normal", activation='elu'))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', init="he_normal", activation='elu'))
+model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', init="he_normal", activation='elu'))
+model.add(Dropout(0.5))
 model.add(Flatten())
-model.add(Dense(1164, activation='relu'))
-model.add(Dense(100, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(10, activation='relu'))
+model.add(Dense(1164, init="he_normal", activation='elu'))
+model.add(Dense(100, init="he_normal", activation='elu'))
+model.add(Dense(50, init="he_normal", activation='elu'))
+model.add(Dense(10, init="he_normal", activation='elu'))
 model.add(Dense(1))
 model.summary()
 
 model.compile(loss='mse', optimizer=Adam(learning_rate))
 
-for it in range(8):
-    train_generator = generator(train_samples, batch_size=256)
-    validation_generator = generator(validation_samples, batch_size=256)
-    model.fit_generator(train_generator, samples_per_epoch=20000, nb_epoch=1, verbose=1)
 
-#model.fit_generator(train_generator, samples_per_epoch= (6*len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
+model.fit_generator(train_generator, samples_per_epoch= (len(train_samples)), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
 #model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-model.save('model_nvidia_3cameras_cropping_generator_modified_end_.h5')
+model.save('model_nvidia_3cameras_cropping_generator_modified_elu_high_augmentation_dropout_YUV.h5')
