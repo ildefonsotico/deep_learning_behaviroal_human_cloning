@@ -10,6 +10,7 @@ import random
 
 HEIGHT,WIDTH, CHANNELS = 66,200,3
 NEW_SHAPE = (HEIGHT,WIDTH)
+ORIGINAL_SHAPE = (HEIGHT,WIDTH, CHANNELS)
 
 def resize(image, new_dim):
     """
@@ -152,7 +153,7 @@ def generator(samples, batch_size=2):
                 augmentation_imgs.append(rgb2yuv(resize(augment_brightness_camera_images(image),NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
 
-                augmentation_imgs.append(rgb2yuv(resize(rgb2yuv(add_random_shadow(image),NEW_SHAPE))))
+                augmentation_imgs.append(rgb2yuv(resize(add_random_shadow(image),NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
 
                 augmentation_imgs.append(rgb2yuv(resize(cv2.flip(image, 1), NEW_SHAPE)))
@@ -160,7 +161,7 @@ def generator(samples, batch_size=2):
 
                 image, measurement = trans_image(image, measurement, random.randint(1,50))
 
-                augmentation_imgs.append(resize(rgb2yuv(augment_brightness_camera_images(image), NEW_SHAPE)))
+                augmentation_imgs.append(rgb2yuv(resize(augment_brightness_camera_images(image), NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
 
 
@@ -201,7 +202,7 @@ learning_rate = 1e-4
 
 model = Sequential()
 #model.add(Cropping2D(cropping=((70,25), (0,0)), input_shape=(160,320,3)))
-model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=NEW_SHAPE))
+model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=ORIGINAL_SHAPE))
 model.add(Convolution2D(24,5,5,subsample=(2,2),border_mode='valid', activation='elu'))
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(36,5,5,subsample=(2,2),border_mode='valid', activation='elu'))
