@@ -9,7 +9,7 @@ import scipy.misc
 import random
 
 HEIGHT,WIDTH, CHANNELS = 66,200,3
-NEW_SHAPE = (HEIGHT,WIDTH, CHANNELS)
+NEW_SHAPE = (HEIGHT,WIDTH)
 
 def resize(image, new_dim):
     """
