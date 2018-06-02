@@ -22,7 +22,7 @@ def resize(image, new_dim):
     :return:
         Resize image
     """
-    cv2.resize(image, new_dim, cv2.INTER_AREA)
+    return cv2.resize(image, new_dim, cv2.INTER_AREA)
 
 def crop(image, top_percent, bottom_percent):
     """
@@ -67,7 +67,8 @@ def trans_image(image, steer, trans_range):
     tr_y = 40 * np.random.uniform() - 40 / 2
     # tr_y = 0
     Trans_M = np.float32([[1, 0, tr_x], [0, 1, tr_y]])
-    image_tr = cv2.warpAffine(image, Trans_M, (cols, rows))
+    height, width = image.shape[:2]
+    image_tr = cv2.warpAffine(image, Trans_M, (height, width))
 
     return image_tr, steer_ang
 
