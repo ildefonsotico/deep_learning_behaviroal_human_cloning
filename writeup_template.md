@@ -86,8 +86,21 @@ In order to normalize the Dataset, each image was normalized using a simple meth
 All dataset were resized to be (66, 200, 3) according with the NVIDIA paper. The dataset also was modified from RGB model to be YUV so that to reach NVIDIA specifications.
 
 #### 2. Data Augmentation
+In order to improve the training process and its generalization was improved the dataset with augmentation. The dataset was used to do that. The soution presented uses different data augmentation tecniques.
 
+It was used all cameras installed on the vehicle, the letf, center and right camera. As known, the sterring angle is just provided by the center camera. Each camera used was also added a derivate steering wheel. The steering wheel derived consist in a simplest idea. It was added a factor (0.221 for the left steering wheel, in other hand it was subtracted (0.221) for the righ steering wheel. Each of them was match by its correspondent images either by righ or left camera. 
 
+Each image got was flipped by the cv library. Its own measurement also was flipped to be consistent.
+
+The another tecnique used to increase the dataset was generate brightness randomically. It was used this tecnique to better understanding. It also generates better generalization for the network. 
+
+It was added shadow in the images in order to increase the dataset and also to improve the generalization of the network. 
+
+The last tecnique used was translate randomically each image. It provides better data and improve the generalization. 
+
+#### 3 Generator
+As known, the dataset with data augmentation becomes too big. This quantity of the data usually can cause memory issues. In order to prevent this was used the generator function. This function works in general as common funtions, but instead of it lost its state, it keeps it, then always when you request it again, it will go one step further and provide you the next batch of the images. 
+It decreases the performance but avoid memory issues. 
 #### 1. Solution Design Approach
 
 The overall strategy for deriving a model architecture was to ...
