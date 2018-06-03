@@ -145,6 +145,16 @@ def generator(samples, batch_size=2):
                 images.append(img_right)
                 measurements.append(steering_right)
 
+                #flipping each image
+                images.append(cv2.flip(img_center, 1))
+                measurements.append(steering_center * -1.0)
+
+                images.append(cv2.flip(img_left, 1))
+                measurements.append(steering_left * -1.0)
+
+                images.append(cv2.flip(img_right, 1))
+                measurements.append(steering_right * -1.0)
+
             augmentation_imgs, augmentation_measurements = [], []
             for image, measurement in zip(images, measurements):
 
@@ -157,12 +167,9 @@ def generator(samples, batch_size=2):
                 augmentation_imgs.append(rgb2yuv(resize(add_random_shadow(image),NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
 
-                augmentation_imgs.append(rgb2yuv(resize(cv2.flip(image, 1), NEW_SHAPE)))
-                augmentation_measurements.append(measurement * -1.0)
-
                 image, measurement = trans_image(image, measurement, random.randint(1,50))
 
-                augmentation_imgs.append(rgb2yuv(resize(augment_brightness_camera_images(image), NEW_SHAPE)))
+                augmentation_imgs.append(rgb2yuv(resize(image, NEW_SHAPE)))
                 augmentation_measurements.append(measurement)
 
 
@@ -212,7 +219,7 @@ model.add(Convolution2D(48,5,5,subsample=(2,2),border_mode='valid', activation='
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', activation='elu'))
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='valid', activation='elu'))
-
+model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(1164,  activation='elu'))
 model.add(Dense(100,  activation='elu'))
