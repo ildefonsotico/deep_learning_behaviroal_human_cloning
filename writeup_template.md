@@ -54,23 +54,24 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model has Keras lambda layer in order to normalize the model dataset. It is used just divind each image by 255 and then subtracting a offset (0.5).
+My model has Keras lambda layer in order to normalize the model dataset. It is used just divind each image by 127.5 and then subtracting a offset (1.0).
 
-My model consists of a convolution neural network with 5x5 filter sizes and depths between 6 and 120 (model.py lines 96-104).
+My model consists of a convolution neural network with 5x5 filter sizes and depths between 24 and 64 (model.py lines 204-214).
 
+It will be presented bellow the architecture of the network. 
 
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 98, 101, 103, 106 and 108). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 215). 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 81-82).
-The validation set was done by spliting training dataset by 20%. 
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 180-184).
+The validation set was done by spliting training dataset by 30%. 
 The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 111).
+The model used an adam optimizer, so the learning rate was tuned manually to be 0.0001 (model.py line 111).
 
 #### 4. Appropriate training data
 
@@ -78,6 +79,14 @@ Training data was chosen to keep the vehicle driving on the road. I used a combi
 
 
 ### Model Architecture and Training Strategy
+#### 1. Pre-Processing Dataset
+
+The dataset was passed through a crop funtion in order to dropout some noise on the images. The noises are sky, threes, hills, car hood, etc. These information will just distract the network with unecessary informations. 
+In order to normalize the Dataset, each image was normalized using a simple method that is juts to subtract 127.5 by each pixel and then add an offeset by 1.
+All dataset were resized to be (66, 200, 3) according with the NVIDIA paper. The dataset also was modified from RGB model to be YUV so that to reach NVIDIA specifications.
+
+#### 2. Data Augmentation
+
 
 #### 1. Solution Design Approach
 
@@ -107,11 +116,13 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 204-222) consisted of a implementation of the NVIDIA Net according with this PDF. 
+It was used ELU activation funtion so that provide nolinearity into the network. ELU was used because it has better derivatives proximely zero, but there is low difference between ELU and ReLU actually.
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
 
-![alt text][image1]
+Here is a visualization of the architecture.
+
+![deeplearning_architecture](https://user-images.githubusercontent.com/19958282/40879200-ded61036-6672-11e8-80da-c9d39828f468.png)
 
 #### 3. Creation of the Training Set & Training Process
 
