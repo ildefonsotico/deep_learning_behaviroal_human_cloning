@@ -88,7 +88,12 @@ All dataset were resized to be (66, 200, 3) according with the NVIDIA paper. The
 #### 2. Data Augmentation
 In order to improve the training process and its generalization was improved the dataset with augmentation. The dataset was used to do that. The soution presented uses different data augmentation tecniques.
 
-It was used all cameras installed on the vehicle, the letf, center and right camera. As known, the sterring angle is just provided by the center camera. Each camera used was also added a derivate steering wheel. The steering wheel derived consist in a simplest idea. It was added a factor (0.221 for the left steering wheel, in other hand it was subtracted (0.221) for the righ steering wheel. Each of them was match by its correspondent images either by righ or left camera. 
+It was used all cameras installed on the vehicle, the letf, center and right camera. As known, the sterring angle is just provided by the center camera. Each camera used was also added a derivate steering wheel. The steering wheel derived consist in a simplest idea. It was added a factor (0.2) for the left steering wheel, in other hand it was subtracted (0.2) for the righ steering wheel. Each of them was match by its correspondent images either by righ or left camera. 
+
+![cameras_behaviroal_human_driving](https://user-images.githubusercontent.com/19958282/41000142-6777c46c-68e3-11e8-9352-12f1e5736843.png)
+
+Each image got was cropped by 35% on top of the image and 10% from the bottom. It was done in order to prevent distraction of the network with non important data.
+![cameras_behaviroal_human_driving_cropped](https://user-images.githubusercontent.com/19958282/41000266-d38d854c-68e3-11e8-9985-ee84bf9cea11.png)
 
 Each image got was flipped by the cv library. Its own measurement also was flipped to be consistent.
 
