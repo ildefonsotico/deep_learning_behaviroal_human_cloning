@@ -134,7 +134,6 @@ The last tecnique used was shear randomically. It provides better data and impro
 ![shear_sample13](https://user-images.githubusercontent.com/19958282/41196294-d9b75466-6c12-11e8-8deb-1fbd01f39397.png)
 ![shear_sample17](https://user-images.githubusercontent.com/19958282/41196295-d9fd54ca-6c12-11e8-987a-58d2edabe540.png)
 ![shear_sample18](https://user-images.githubusercontent.com/19958282/41196296-da61e1ec-6c12-11e8-97a2-ee43c9ad9738.png)
-![shear_sample20](https://user-images.githubusercontent.com/19958282/41196297-da990410-6c12-11e8-9703-b0c95775d420.png)
 
 #### 3 Generator
 As known, the dataset with data augmentation becomes too big. This quantity of the data usually can cause memory issues. In order to prevent this was used the generator function. This function works in general as common funtions, but instead of it lost its state, it keeps it, then always when you request it again, it will go one step further and provide you the next batch of the images. 
@@ -158,47 +157,21 @@ In order to gauge how well the model was working, I split my image and steering 
 
 I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
-To combat the overfitting, I modified the model so that use dropout with keep_prob of the 0.5. 
+To combat the overfitting, all dataset was shuttle by each interaction. 
 Then I got better tranning loss and validation.  
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, mainly on the next curve after the bridge. I improved the driving behavior in these cases just collecting more data about that section of the circuit.
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, mainly on the next curve after the bridge. The folder failure show a lot failures test made. It was done a lot testing using differents data agumentation and net architecture. 
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+
+It will be provided two video. The first one focus on local vehicle camera. It is used according udacity project specifications. The another video is a top view. It shows better how the vehicle droves on the track. 
 
 #### 2. Final Model Architecture
 
 The final model architecture (model.py lines 204-222) consisted of a implementation of the NVIDIA Net according with this PDF. 
-It was used ELU activation funtion so that provide nolinearity into the network. ELU was used because it has better derivatives proximely zero, but there is low difference between ELU and ReLU actually.
-
+It was used RELU activation funtion so that provide nolinearity into the network. 
 
 Here is a visualization of the architecture.
 
 ![deeplearning_architecture](https://user-images.githubusercontent.com/19958282/40879200-ded61036-6672-11e8-80da-c9d39828f468.png)
 
-#### 3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
