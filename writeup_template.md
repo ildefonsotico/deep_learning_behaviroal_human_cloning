@@ -113,16 +113,28 @@ The another tecnique used to create the dataset was generate the gamma by each i
 ![gamma_sample13](https://user-images.githubusercontent.com/19958282/41196215-98b3ee4e-6c11-11e8-9a68-0804903c9c1e.png)
 ![gamma_sample14](https://user-images.githubusercontent.com/19958282/41196216-98ea00b0-6c11-11e8-9ec2-86bdc04f81d5.png)
 ![gamma_sample15](https://user-images.githubusercontent.com/19958282/41196217-99204616-6c11-11e8-9b9f-d2530e398324.png)
-![gamma_sample16](https://user-images.githubusercontent.com/19958282/41196218-995fc8cc-6c11-11e8-8b39-4a186c2e46e6.png)
-![gamma_sample17](https://user-images.githubusercontent.com/19958282/41196219-9998670e-6c11-11e8-8976-9a7ff2b6d4b9.png)
-![gamma_sample18](https://user-images.githubusercontent.com/19958282/41196220-99cf2ea6-6c11-11e8-9eb8-8d5486233b4a.png)
 
 
 The another tecnique used to increase the dataset was generate brightness randomically. It was used this tecnique to better understanding. It also generates better generalization for the network. 
 
-It was added shadow in the images in order to increase the dataset and also to improve the generalization of the network. 
+![gamma_sample29](https://user-images.githubusercontent.com/19958282/41196248-4fa4ecb6-6c12-11e8-87b9-9b1b73e0fa70.png)
+![gamma_sample32](https://user-images.githubusercontent.com/19958282/41196249-4fdab30a-6c12-11e8-9144-7db4ec5caa93.png)
+![gamma_sample4](https://user-images.githubusercontent.com/19958282/41196250-500f908e-6c12-11e8-8d0c-d024ef2d72c9.png)
+![gamma_sample7](https://user-images.githubusercontent.com/19958282/41196251-50808186-6c12-11e8-8c35-c983540688d2.png)
+![gamma_sample17](https://user-images.githubusercontent.com/19958282/41196252-50c01a6c-6c12-11e8-9138-a7259a52ec8d.png)
+![gamma_sample19](https://user-images.githubusercontent.com/19958282/41196253-514925aa-6c12-11e8-9beb-0cdb5ac671e9.png)
 
-The last tecnique used was translate randomically each image. It provides better data and improve the generalization. 
+The last tecnique used was shear randomically. It provides better data and improve the generalization. 
+
+![shear_sample23](https://user-images.githubusercontent.com/19958282/41196288-d8a70d14-6c12-11e8-9733-125241846323.png)
+![shear_sample1](https://user-images.githubusercontent.com/19958282/41196289-d8dcef38-6c12-11e8-8e14-13ce7b9ec930.png)
+![shear_sample8](https://user-images.githubusercontent.com/19958282/41196291-d912ca0e-6c12-11e8-8078-225ef27fda79.png)
+![shear_sample9](https://user-images.githubusercontent.com/19958282/41196292-d949d0d0-6c12-11e8-90a4-11c60ae00769.png)
+![shear_sample11](https://user-images.githubusercontent.com/19958282/41196293-d9800a1a-6c12-11e8-9ea5-46376ce3f017.png)
+![shear_sample13](https://user-images.githubusercontent.com/19958282/41196294-d9b75466-6c12-11e8-8deb-1fbd01f39397.png)
+![shear_sample17](https://user-images.githubusercontent.com/19958282/41196295-d9fd54ca-6c12-11e8-987a-58d2edabe540.png)
+![shear_sample18](https://user-images.githubusercontent.com/19958282/41196296-da61e1ec-6c12-11e8-97a2-ee43c9ad9738.png)
+![shear_sample20](https://user-images.githubusercontent.com/19958282/41196297-da990410-6c12-11e8-9703-b0c95775d420.png)
 
 #### 3 Generator
 As known, the dataset with data augmentation becomes too big. This quantity of the data usually can cause memory issues. In order to prevent this was used the generator function. This function works in general as common funtions, but instead of it lost its state, it keeps it, then always when you request it again, it will go one step further and provide you the next batch of the images. 
