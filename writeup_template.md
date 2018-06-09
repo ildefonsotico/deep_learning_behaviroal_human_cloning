@@ -102,16 +102,21 @@ By each interaction the images were chose randomically. It was did in order to g
 Each image got was flipped by the cv library. Its own measurement also was flipped to be consistent. Basing in a probability the image used either could be original one or the flipped. 
 
 The another tecnique used to create the dataset was generate the gamma by each image of the dataset chose. 
-![gamma_sample10](https://user-images.githubusercontent.com/19958282/41196175-f0b57316-6c10-11e8-8ab4-792dec24a5af.png)
-![gamma_sample11](https://user-images.githubusercontent.com/19958282/41196178-f3a424dc-6c10-11e8-9e7d-6d8ebbc8661a.png)
-![gamma_sample12](https://user-images.githubusercontent.com/19958282/41196179-f65bf9f2-6c10-11e8-8ec0-e3fd61474bf5.png)
-![gamma_sample13](https://user-images.githubusercontent.com/19958282/41196181-f8aac01c-6c10-11e8-84b7-b8b1a85da5b5.png)
-![gamma_sample14](https://user-images.githubusercontent.com/19958282/41196182-fb89041a-6c10-11e8-857b-94a3036e0859.png)
-![gamma_sample17](https://user-images.githubusercontent.com/19958282/41196183-ffa23b7a-6c10-11e8-8a0b-d804fd24e276.png)
-![gamma_sample19](https://user-images.githubusercontent.com/19958282/41196199-5fc959de-6c11-11e8-8286-200208c65320
-![gamma_sample21](https://user-images.githubusercontent.com/19958282/41196201-65bf9f7e-6c11-11e8-8cd5-24f0f932d1b8.png)
-.png)
-![gamma_sample20](https://user-images.githubusercontent.com/19958282/41196200-6308a9e2-6c11-11e8-8bc6-c68d05d2f6f1.png)
+
+![gamma_sample19](https://user-images.githubusercontent.com/19958282/41196208-9724b428-6c11-11e8-8223-3486263b2c7d.png)
+![gamma_sample20](https://user-images.githubusercontent.com/19958282/41196209-975a7798-6c11-11e8-9906-e650054c158f.png)
+![gamma_sample21](https://user-images.githubusercontent.com/19958282/41196210-9790f278-6c11-11e8-916c-92c3e60e836c.png)
+![gamma_sample22](https://user-images.githubusercontent.com/19958282/41196211-97c6f8be-6c11-11e8-83d2-5ae9b6e29a6b.png)
+![gamma_sample10](https://user-images.githubusercontent.com/19958282/41196212-980107fc-6c11-11e8-8e11-48c4fdd45089.png)
+![gamma_sample11](https://user-images.githubusercontent.com/19958282/41196213-984962ea-6c11-11e8-871e-bd3cb4727774.png)
+![gamma_sample12](https://user-images.githubusercontent.com/19958282/41196214-987e5630-6c11-11e8-8a6f-e4aee5ca271d.png)
+![gamma_sample13](https://user-images.githubusercontent.com/19958282/41196215-98b3ee4e-6c11-11e8-9a68-0804903c9c1e.png)
+![gamma_sample14](https://user-images.githubusercontent.com/19958282/41196216-98ea00b0-6c11-11e8-9ec2-86bdc04f81d5.png)
+![gamma_sample15](https://user-images.githubusercontent.com/19958282/41196217-99204616-6c11-11e8-9b9f-d2530e398324.png)
+![gamma_sample16](https://user-images.githubusercontent.com/19958282/41196218-995fc8cc-6c11-11e8-8b39-4a186c2e46e6.png)
+![gamma_sample17](https://user-images.githubusercontent.com/19958282/41196219-9998670e-6c11-11e8-8976-9a7ff2b6d4b9.png)
+![gamma_sample18](https://user-images.githubusercontent.com/19958282/41196220-99cf2ea6-6c11-11e8-9eb8-8d5486233b4a.png)
+
 
 The another tecnique used to increase the dataset was generate brightness randomically. It was used this tecnique to better understanding. It also generates better generalization for the network. 
 
