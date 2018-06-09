@@ -88,14 +88,21 @@ All dataset were resized to be (66, 200, 3) according with the NVIDIA paper. The
 #### 2. Data Augmentation
 In order to improve the training process and its generalization was improved the dataset with augmentation. The dataset was used to do that. The soution presented uses different data augmentation tecniques.
 
-It was used all cameras installed on the vehicle, the letf, center and right camera. As known, the sterring angle is just provided by the center camera. Each camera used was also added a derivate steering wheel. The steering wheel derived consist in a simplest idea. It was added a factor (0.2) for the left steering wheel, in other hand it was subtracted (0.2) for the righ steering wheel. Each of them was match by its correspondent images either by righ or left camera. 
+It was used all cameras installed on the vehicle, the letf, center and right camera. As known, the sterring angle is just provided by the center camera. Each camera used was also added a derivate steering wheel. The steering wheel derived consist in a simplest idea. It was added a factor (0.235) for the left steering wheel, in other hand it was subtracted (0.235) for the righ steering wheel. Each of them was match by its correspondent images either by righ or left camera. 
 
 ![cameras_behaviroal_human_driving](https://user-images.githubusercontent.com/19958282/41000142-6777c46c-68e3-11e8-9352-12f1e5736843.png)
 
-Each image got was cropped by 35% on top of the image and 10% from the bottom. It was done in order to prevent distraction of the network with non important data.
+Each image got was cropped by 35% on top of the image and 15% from the bottom. It was done in order to prevent distraction of the network with non important data.
 ![cameras_behaviroal_human_driving_cropped](https://user-images.githubusercontent.com/19958282/41000266-d38d854c-68e3-11e8-9985-ee84bf9cea11.png)
 
-Each image got was flipped by the cv library. Its own measurement also was flipped to be consistent.
+All  images was shuttle each interaction of the net. It was done like that in order to prevent overfitting and also reducing the training error. It is the most important thing in order to get a real good net trained. 
+
+By each interaction the images were chose randomically. It was did in order to get just one image/measurement from three cameras (left, Center, Right).
+
+Each image got was flipped by the cv library. Its own measurement also was flipped to be consistent. Basing in a probability the image used either could be original one or the flipped. 
+
+The another tecnique used to create the dataset was generate the gamma by each image of the dataset chose. ![gamma_sample10](https://user-images.githubusercontent.com/19958282/41196175-f0b57316-6c10-11e8-8ab4-792dec24a5af.png) ![gamma_sample11](https://user-images.githubusercontent.com/19958282/41196178-f3a424dc-6c10-11e8-9e7d-6d8ebbc8661a.png) ![gamma_sample12](https://user-images.githubusercontent.com/19958282/41196179-f65bf9f2-6c10-11e8-8ec0-e3fd61474bf5.png)
+![gamma_sample13](https://user-images.githubusercontent.com/19958282/41196181-f8aac01c-6c10-11e8-84b7-b8b1a85da5b5.png) ![gamma_sample14](https://user-images.githubusercontent.com/19958282/41196182-fb89041a-6c10-11e8-857b-94a3036e0859.png) ![gamma_sample17](https://user-images.githubusercontent.com/19958282/41196183-ffa23b7a-6c10-11e8-8a0b-d804fd24e276.png)
 
 The another tecnique used to increase the dataset was generate brightness randomically. It was used this tecnique to better understanding. It also generates better generalization for the network. 
 
