@@ -140,22 +140,21 @@ As known, the dataset with data augmentation becomes too big. This quantity of t
 It decreases the performance but avoid memory issues. 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
 
 The model tryed to use different layers in order to get better accuracy such traning mode as validation mode. 
-The model introduce RELU layers to introduce nonlinearity (code line 96 and 98). The base archicture that worked better is a very simple one. 
+The model introduce RELU layers to introduce nonlinearity (code line 237 and 256). The better architeture was to use NvidiaNet with some maxpolling. It allowed better accuracy.
 
 It uses a Convulution with filter with 5x5 size following for a RELU activation funtion. 
-Next it uses a MaxPooling layer folloowing by a Convolution layer again with 5x% filter. 
+Next it uses a MaxPooling layer folloowing by a Convolution layer again with 5x5 filter. 
 Next it uses MaxPooling again, then a flatten layer. 
 
-The last 3 steps of the net used 3 fully connected layer starting by 120 passing through 84 and finally 1. 
+The last 3 steps of the net used 3 fully connected layer starting by 1164 passing through 100, 50 and finally 1. 
 
-It tested a lot of different architectures since the VGGNet and the NVIDIANet. All of the architectures was not able to do a specific curve (The .h5 files from all architectures I have tried are into the trained folder). All of them went out of the road or hit the hills. This simple one was the best approach found in terms of capacity to complete de circuit without hit or slipery for the edges of the curves. 
+It tested a lot of different architectures since the VGGNet and the NVIDIANet. All of the architectures was not able to do a specific curve (There are some models testes into the failure models folder). All of them went out of the road or hit the hills.  
 
-In order to gauge how well the model was working, I split my image and steering angle dataset into a training and validation set. 
+In order to gauge how well the model was working, I split my image and steering angle dataset into a training and validation set by 30048 for training and 7400 for validation
 
-I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting.
 
 To combat the overfitting, all dataset was shuttle by each interaction. 
 Then I got better tranning loss and validation.  
@@ -168,7 +167,7 @@ It will be provided two video. The first one focus on local vehicle camera. It i
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 204-222) consisted of a implementation of the NVIDIA Net according with this PDF. 
+The final model architecture (model.py lines 237-256) consisted of a implementation of the NVIDIA Net according with this PDF. 
 It was used RELU activation funtion so that provide nolinearity into the network. 
 
 Here is a visualization of the architecture.
