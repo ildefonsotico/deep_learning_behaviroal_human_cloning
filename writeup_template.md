@@ -167,7 +167,7 @@ It will be provided two video. The first one focus on local vehicle camera. It i
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 237-256) consisted of a implementation of the NVIDIA Net according with this PDF. 
+The final model architecture (model.py lines 237-256) consisted of a implementation of the NVIDIA Net according with this [NVIDIA](https://github.com/ildefonsotico/deep_learning_behaviroal_human_cloning/files/2087943/end-to-end-dl-using-px.pdf). 
 It was used RELU activation funtion so that provide nolinearity into the network. 
 
 Here is a visualization of the architecture.
