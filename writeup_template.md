@@ -63,7 +63,7 @@ It will be presented bellow the architecture of the network.
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 239 to 254). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 254). 
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 214-215).
 The validation set was done by spliting training dataset by 20%. 
