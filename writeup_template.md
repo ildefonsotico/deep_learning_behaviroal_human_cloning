@@ -63,10 +63,10 @@ It will be presented bellow the architecture of the network.
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 215). 
+The model contains dropout layers in order to reduce overfitting (model.py lines 239 to 254). 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 180-184).
-The validation set was done by spliting training dataset by 30%. 
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 214-215).
+The validation set was done by spliting training dataset by 20%. 
 The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
@@ -135,10 +135,10 @@ The last tecnique used was shear randomically. It provides better data and impro
 ![shear_sample17](https://user-images.githubusercontent.com/19958282/41196295-d9fd54ca-6c12-11e8-987a-58d2edabe540.png)
 ![shear_sample18](https://user-images.githubusercontent.com/19958282/41196296-da61e1ec-6c12-11e8-97a2-ee43c9ad9738.png)
 
-#### 3 Generator
+#### 3. Generator
 As known, the dataset with data augmentation becomes too big. This quantity of the data usually can cause memory issues. In order to prevent this was used the generator function. This function works in general as common funtions, but instead of it lost its state, it keeps it, then always when you request it again, it will go one step further and provide you the next batch of the images. 
 It decreases the performance but avoid memory issues. 
-#### 1. Solution Design Approach
+#### 4. Solution Design Approach
 
 
 The model tryed to use different layers in order to get better accuracy such traning mode as validation mode. 
@@ -165,7 +165,7 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 It will be provided two video. The first one focus on local vehicle camera. It is used according udacity project specifications. The another video is a top view. It shows better how the vehicle droves on the track. 
 
-#### 2. Final Model Architecture
+#### 5. Final Model Architecture
 
 The final model architecture (model.py lines 237-256) consisted of a implementation of the NVIDIA Net according with this [NVIDIA](https://github.com/ildefonsotico/deep_learning_behaviroal_human_cloning/files/2087943/end-to-end-dl-using-px.pdf). 
 It was used RELU activation funtion so that provide nolinearity into the network. 
