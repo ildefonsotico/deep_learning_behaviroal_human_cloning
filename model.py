@@ -8,7 +8,7 @@ from sklearn.utils import shuffle
 import scipy.misc
 import random
 
-from scipy.stats import rand_prob
+from scipy.stats import bernoulli
 
 HEIGHT,WIDTH, CHANNELS = 64,64,3 # resize the image to be 64x64
 NEW_SHAPE = (HEIGHT,WIDTH)
@@ -81,7 +81,7 @@ def random_flip(image, steering_angle, flipping_prob=0.5):
 
     :return: Both flipped image and new steering angle
     """
-    head = rand_prob.rvs(flipping_prob)
+    head = bernoulli.rvs(flipping_prob)
     if head:
         return np.fliplr(image), -1 * steering_angle
     else:
@@ -183,7 +183,7 @@ def generator(samples, batch_size=32):
                 cont = cont + 1
 
 
-                rst = rand_prob.rvs(0.9)
+                rst = bernoulli.rvs(0.9)
                 if rst == 1:
                     image, measurement = shear(image, measurement)
 
@@ -211,7 +211,7 @@ with open('data/driving_log.csv') as csvfile:
     for line in reader:
         samples.append(line)
 
-#slip the datase, getting 20% to be used as a validation set... it was used before
+#slip the dataset, getting 20% to be used as a validation set... it was used before
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 
@@ -239,15 +239,19 @@ model = Sequential()
 model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=ORIGINAL_SHAPE))
 model.add(Convolution2D(24,5,5,subsample=(2,2),border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-#model.add(Dropout(0.5))
+
 model.add(Convolution2D(36,5,5,subsample=(2,2),border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+
 model.add(Convolution2D(48,5,5,subsample=(2,2),border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+
 model.add(Convolution2D(64,3,3,subsample=(1,1), border_mode='same', activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(1164,  activation='relu'))
 model.add(Dense(100,  activation='relu'))
@@ -257,7 +261,7 @@ model.add(Dense(1))
 model.summary()
 model.compile(optimizer=Adam(learning_rate), loss="mse" )
 
-odel.fit_generator(train_generator, samples_per_epoch= (samples_per_epoch), validation_data=validation_generator, nb_val_samples=validation_samples, nb_epoch=epochs)
+model.fit_generator(train_generator, samples_per_epoch= (samples_per_epoch), validation_data=validation_generator, nb_val_samples=validation_samples, nb_epoch=epochs)
 #model.fit(X_train, Y_train, validation_split=0.3, shuffle=True, nb_epoch=5)
 
-model.save('model_nvidia_3cameras_cropping_35_15_generator_modified_relu_randon_brithness_30k_same_64_64.h5')
+model.save('model_dropout2.h5')
